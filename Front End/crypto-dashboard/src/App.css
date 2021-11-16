@@ -1,13 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Sora&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 * {
-  font-family: 'Sora', sans-serif;
+  font-family: "Sora", sans-serif;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-.login-btn{
+.login-btn {
   border-radius: 1rem;
   background: #014aac;
   padding: 1rem 1rem;
