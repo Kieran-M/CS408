@@ -27,6 +27,7 @@
     "react-router-dom": "^6.0.1",
     "react-script-tag": "^1.1.2",
     "react-scripts": "4.0.3",
+    "react-sparklines": "^1.7.0",
     "react-table": "^7.7.0",
     "styled-components": "^5.3.3",
     "tailwind": "^4.0.0",
@@ -34,8 +35,8 @@
   },
   "scripts": {
     "start": "craco start",
-     "build": "craco build",
-     "test": "craco test",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

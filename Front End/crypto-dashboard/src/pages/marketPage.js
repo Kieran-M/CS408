@@ -6,6 +6,8 @@ import Sidebar from "../components/sidebar";
 import Navbar from "../components/navbar";
 import Table from "../components/table/Table";
 
+import { Sparklines,SparklinesLine,SparklinesSpots } from 'react-sparklines';
+
 import "../components/table/Table.css";
 
 const Market = () => {
@@ -44,6 +46,8 @@ const Market = () => {
       {
         Header: "",
         accessor: "image",
+        disableFilters: true,
+        disableSortBy: true,
         Cell: (tableProps) => (
           <img
             src={tableProps.row.original.image}
@@ -63,14 +67,17 @@ const Market = () => {
       {
         Header: "Current Price",
         accessor: "current_price",
+        disableFilters: true,
       },
       {
         Header: "Market Cap",
         accessor: "market_cap",
+        disableFilters: true,
       },
       {
-        Header: "Price",
+        Header: "Price Change % (24h)",
         accessor: "price_change_percentage_24h",
+        disableFilters: true,
         Cell: (tableProps) => (
           <div
             className={
@@ -79,13 +86,27 @@ const Market = () => {
                 : "text-sm text-green-500"
             }
           >
-            {tableProps.row.original.price_change_percentage_24h}
+            {tableProps.row.original.price_change_percentage_24h} %
           </div>
         ),
       },
       {
         Header: "Volume",
         accessor: "total_volume",
+        disableFilters: true,
+      },
+      {
+        Header: "Last 7 Days",
+        accessor: "x_days",
+        disableFilters: true,
+        disableSortBy: true,
+        Cell: (tableProps) => (
+          <Sparklines data={tableProps.row.original.x_days} preserveAspectRatio={true}>
+            <SparklinesLine color={tableProps.row.original.price_change_percentage_24h < 0
+                ? "red"
+                : "green"} style={{ fill: "none" }}/>
+        </Sparklines>
+        ),
       },
     ],
     []
@@ -102,6 +123,8 @@ const Market = () => {
         market_cap: "$" + coin.market_cap,
         price_change_percentage_24h: coin.price_change_percentage_24h,
         total_volume: "$" + coin.total_volume,
+        //x_days: Array.from({length: 7}, () => Math.floor(Math.random() * 100)) Randomly generate array to show how sparklines look
+        x_days: [48518,48166,49748,48007,47493,48031,48498,47726] //Sample bitcoin data over 7 days
       };
     })
   );
