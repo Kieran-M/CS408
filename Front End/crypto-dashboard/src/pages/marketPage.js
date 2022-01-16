@@ -6,7 +6,7 @@ import Sidebar from "../components/sidebar";
 import Navbar from "../components/navbar";
 import Table from "../components/table/Table";
 
-import { Sparklines,SparklinesLine,SparklinesSpots } from 'react-sparklines';
+import { Sparklines, SparklinesLine, SparklinesSpots } from "react-sparklines";
 
 import "../components/table/Table.css";
 
@@ -19,10 +19,12 @@ const Market = () => {
 
   const [coin, setCoins] = useState([]);
 
+  const sparklines = [];
+
   const getCoins = async () => {
     axios
       .get(
-        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false"
+        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true"
       )
       .then((res) => {
         setCoins(res.data);
@@ -101,11 +103,19 @@ const Market = () => {
         disableFilters: true,
         disableSortBy: true,
         Cell: (tableProps) => (
-          <Sparklines data={tableProps.row.original.x_days} preserveAspectRatio={true}>
-            <SparklinesLine color={tableProps.row.original.price_change_percentage_24h < 0
-                ? "red"
-                : "green"} style={{ fill: "none" }}/>
-        </Sparklines>
+          <Sparklines
+            data={tableProps.row.original.x_days}
+            preserveAspectRatio={true}
+          >
+            <SparklinesLine
+              color={
+              tableProps.row.original.x_days[0] < tableProps.row.original.x_days.reverse()[0]
+                  ? "red"
+                  : "green"
+              }
+              style={{ fill: "none" }}
+            />
+          </Sparklines>
         ),
       },
     ],
@@ -123,8 +133,7 @@ const Market = () => {
         market_cap: "$" + coin.market_cap,
         price_change_percentage_24h: coin.price_change_percentage_24h,
         total_volume: "$" + coin.total_volume,
-        //x_days: Array.from({length: 7}, () => Math.floor(Math.random() * 100)) Randomly generate array to show how sparklines look
-        x_days: [48518,48166,49748,48007,47493,48031,48498,47726] //Sample bitcoin data over 7 days
+        x_days: coin.sparkline_in_7d.price,
       };
     })
   );

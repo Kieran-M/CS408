@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   useTable,
   useGlobalFilter,
@@ -41,6 +42,10 @@ function GlobalFilter({ globalFilter, setGlobalFilter }) {
 }
 
 function Table({ columns, data }) {
+  const navigate = useNavigate();
+  const handleRowClick = (row) => {
+    navigate(`/coin/${row.original.symbol}`);
+  };
   const {
     getTableProps,
     getTableBodyProps,
@@ -141,7 +146,12 @@ function Table({ columns, data }) {
                   {page.map((row, i) => {
                     prepareRow(row);
                     return (
-                      <tr {...row.getRowProps()}>
+                      <tr
+                        {...row.getRowProps()}
+                        className="hover:bg-gray-200"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleRowClick(row)}
+                      >
                         {row.cells.map((cell) => {
                           return (
                             <td
