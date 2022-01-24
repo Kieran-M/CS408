@@ -6,7 +6,7 @@ import Sidebar from "../components/sidebar";
 import Navbar from "../components/navbar";
 import Table from "../components/table/Table";
 
-import { Sparklines, SparklinesLine, SparklinesSpots } from "react-sparklines";
+import { Sparklines, SparklinesLine } from "react-sparklines";
 
 import "../components/table/Table.css";
 
@@ -18,8 +18,6 @@ const Market = () => {
   };
 
   const [coin, setCoins] = useState([]);
-
-  const sparklines = [];
 
   const getCoins = async () => {
     axios
@@ -109,7 +107,8 @@ const Market = () => {
           >
             <SparklinesLine
               color={
-              tableProps.row.original.x_days[0] < tableProps.row.original.x_days.reverse()[0]
+                tableProps.row.original.x_days[0] <
+                tableProps.row.original.x_days.reverse()[0]
                   ? "red"
                   : "green"
               }
@@ -129,10 +128,11 @@ const Market = () => {
         image: coin.image,
         name: coin.name,
         symbol: coin.symbol.toUpperCase(),
-        current_price: "$" + coin.current_price,
-        market_cap: "$" + coin.market_cap,
-        price_change_percentage_24h: coin.price_change_percentage_24h,
-        total_volume: "$" + coin.total_volume,
+        current_price: "$" + coin.current_price.toLocaleString(),
+        market_cap: "$" + coin.market_cap.toLocaleString(),
+        price_change_percentage_24h:
+          coin.price_change_percentage_24h.toLocaleString(),
+        total_volume: "$" + coin.total_volume.toLocaleString(),
         x_days: coin.sparkline_in_7d.price,
       };
     })
