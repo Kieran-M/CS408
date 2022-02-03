@@ -3,12 +3,14 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
+  *{
   font-family: "Sora", sans-serif;
+  }
+  /**
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
+
 
 .login-btn {
   border-radius: 1rem;
@@ -27,3 +29,4 @@
   background: #447cc4;
   color: #010606;
 }
+*/

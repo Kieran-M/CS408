@@ -26,7 +26,7 @@ function GlobalFilter({ globalFilter, setGlobalFilter }) {
 
   return (
     <label className="flex gap-x-2 items-baseline">
-      <span className="text-gray-1000">Search: </span>
+      <span className="text-xl text-gray-1000">Search: </span>
       <input
         type="text"
         className="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
@@ -160,7 +160,7 @@ function Table({ columns, data }) {
                               role="cell"
                             >
                               {cell.column.Cell.name === "defaultRenderer" ? (
-                                <div className="text-sm text-gray-1000">
+                                <div className="text-base text-gray-1000">
                                   {cell.render("Cell")}
                                 </div>
                               ) : (
