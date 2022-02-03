@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import Sidebar from "../components/sidebar";
 import Navbar from "../components/navbar";
+import BuyMenu from "../components/buyMenu";
+
 import "./coinPage.css";
 
 import axios from "axios";
 
-import { css } from "@emotion/react";
+import Spinner from "../components/Spinner";
 
-import ClipLoader from "react-spinners/ClipLoader";
+import OrderBook from "../components/orderBook";
 
 import Highcharts from "highcharts/highstock";
 import HighchartsReact from "highcharts-react-official";
@@ -34,12 +35,11 @@ HollowCandlestick(Highcharts);
 //Show reset zoom button on X axis zoom
 Highcharts.removeEvent(Highcharts.Chart, "beforeShowResetZoom");
 
-const Coin = ({ match, location }) => {
+const Coin = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState(null);
-  const [buyAmount, setBuyAmount] = useState(0);
-  const [buyPrice, setBuyPrice] = useState(0);
+  const [order, setOrder] = useState({ amount: 0, price: 0 });
 
   const toggle = () => {
     setIsOpen(!isOpen);
@@ -51,29 +51,18 @@ const Coin = ({ match, location }) => {
     axios
       .get("http://127.0.0.1:8000/coins/" + coinname.toUpperCase() + "USDT")
       .then((res) => {
-        console.log(res.data);
-        console.log(...res.data);
         setData(res.data);
         setLoading(false);
       })
       .catch((error) => console.log(error));
   }, []);
 
-  //Override css for spinner
-  const override = css`
-    display: block;
-    margin-top: 500;
-    margin: 0 auto;
-    margin-top: 200px;
-  `;
-
   //While data is still being fetched display loading spinner
   if (isLoading) {
     return (
       <>
-        <Sidebar isOpen={isOpen} toggle={toggle} />
-        <Navbar toggle={toggle} />
-        <ClipLoader color={"#4A90E2"} css={override} size={300}></ClipLoader>
+        <Navbar/>
+        <Spinner isLoading={isLoading}></Spinner>
       </>
     );
   }
@@ -150,16 +139,17 @@ const Coin = ({ match, location }) => {
     },
   };
 
-  //Send buy and sell requests to backend
-  const handleBuy = () => {
+  function orderHandler(type) {
     axios
       .get(
-        "http://127.0.0.1:8000/buy?coin_name=" +
+        "http://127.0.0.1:8000/" +
+          type +
+          "?coin_name=" +
           coinname +
           "&quantity=" +
-          buyAmount +
+          order.amount +
           "&price=" +
-          buyPrice
+          order.price
       )
       .then(function (response) {
         alert(JSON.stringify(response.data));
@@ -167,100 +157,39 @@ const Coin = ({ match, location }) => {
       .catch(function (error) {
         console.log(error);
       });
-  };
-
-  const handleSell = () => {
-    axios
-      .get(
-        "http://127.0.0.1:8000/sell?coin_name=" +
-          coinname +
-          "&quantity=" +
-          buyAmount +
-          "&price=" +
-          buyPrice
-      )
-      .then(function (response) {
-        alert(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
+  }
 
   return (
     <>
-      <Sidebar isOpen={isOpen} toggle={toggle} />
       <Navbar toggle={toggle} />
-      <div id="chart-container">
-        <HighchartsReact
-          highcharts={Highcharts}
-          constructorType={"stockChart"}
-          containerProps={{ style: { height: "100%" } }}
-          options={options}
-        />
-      </div>
-      <div id="buy-menu">
-        <form class="w-full max-w-sm">
-          <div class="md:flex md:items-center mb-6">
-            <div class="md:w-1/3">
-              <label
-                class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                for="inline-amount"
-              >
-                Amount
-              </label>
-            </div>
-            <div class="md:w-2/3">
-              <input
-                class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-                id="inline-amount"
-                type="number"
-                value={buyAmount}
-                onChange={(event) => setBuyAmount(event.target.value)}
-              ></input>
-            </div>
+      <div className="min-h-screen bg-gray-100 text-gray-1000">
+        <div class="grid grid-cols-5 h-auto">
+          <div class="col-span-1">
+            <OrderBook
+              order={order}
+              setOrder={setOrder}
+              coin={coinname}
+              isLoading={isLoading}
+            />
           </div>
-          <div class="md:flex md:items-center mb-6">
-            <div class="md:w-1/3">
-              <label
-                class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                for="inline-price"
-              >
-                Price
-              </label>
-            </div>
-            <div class="md:w-2/3">
-              <input
-                class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-                id="inline-price"
-                type="number"
-                value={buyPrice}
-                onChange={(event) => setBuyPrice(event.target.value)}
-              ></input>
-            </div>
+          <div class="col-span-4">
+            <HighchartsReact
+              highcharts={Highcharts}
+              constructorType={"stockChart"}
+              containerProps={{ style: { height: "100%" } }}
+              options={options}
+            />
           </div>
-          <div class="md:flex md:items-center">
-            <div class="md:w-1/3"></div>
-            <div class="md:w-2/3">
-              <div class="flex items-center justify-between">
-                <button
-                  onClick={handleBuy}
-                  class="shadow bg-blue-500 hover:bg-blue-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-8 rounded"
-                  type="button"
-                >
-                  Buy
-                </button>
-                <button
-                  onClick={handleSell}
-                  class="shadow bg-blue-500 hover:bg-blue-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-8 rounded"
-                  type="button"
-                >
-                  Sell
-                </button>
-              </div>
-            </div>
+        </div>
+        <div class="grid my-5 grid-cols-1 h-100">
+          <div id="col-span-1 h-full">
+            <BuyMenu
+              order={order}
+              setOrder={setOrder}
+              orderHandler={orderHandler}
+            />
           </div>
-        </form>
+        </div>
       </div>
     </>
   );

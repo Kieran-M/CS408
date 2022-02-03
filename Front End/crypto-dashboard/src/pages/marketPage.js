@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 
 import axios from "axios";
 
-import Sidebar from "../components/sidebar";
 import Navbar from "../components/navbar";
 import Table from "../components/table/Table";
 
@@ -82,8 +81,8 @@ const Market = () => {
           <div
             className={
               tableProps.row.original.price_change_percentage_24h < 0
-                ? "text-sm text-red-500"
-                : "text-sm text-green-500"
+                ? "text-base text-red-500"
+                : "text-base text-green-500"
             }
           >
             {tableProps.row.original.price_change_percentage_24h} %
@@ -140,12 +139,11 @@ const Market = () => {
 
   return (
     <>
-      <Sidebar isOpen={isOpen} toggle={toggle} />
       <Navbar toggle={toggle} />
       <div className="min-h-screen bg-gray-100 text-gray-1000">
         <main className="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
           <div className="">
-            <h1 className="text-xl font-semibold">Market</h1>
+            <h1 className="text-3xl font-semibold">Market</h1>
           </div>
           <div className="mt-6">
             <Table columns={columns} data={data} />
