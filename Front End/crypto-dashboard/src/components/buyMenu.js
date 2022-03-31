@@ -1,7 +1,10 @@
 import React from "react";
+import Slider from '@mui/material/Slider';
+import AuthenticationButton from "./authenticationButton";
 
 const BuyMenu = (props) => {
   return (
+    <>
     <form class="w-full max-w-sm">
       <div class="md:flex md:items-center mb-6">
         <div class="md:w-1/3">
@@ -50,11 +53,17 @@ const BuyMenu = (props) => {
             }}
           ></input>
         </div>
+        <div class="md:w-3/3">
+        </div>
       </div>
+      
       <div class="md:flex md:items-center">
+      
         <div class="md:w-1/3"></div>
+        
         <div class="md:w-2/3">
           <div class="flex items-center justify-between">
+          {!(localStorage.getItem("_auth")) ? (<AuthenticationButton className="w-full shadow bg-blue-500 hover:bg-blue-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-8 rounded"></AuthenticationButton>) : (<>
             <button
               onClick={() => props.orderHandler("buy")}
               class="shadow bg-blue-500 hover:bg-blue-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-8 rounded"
@@ -68,11 +77,12 @@ const BuyMenu = (props) => {
               type="button"
             >
               Sell
-            </button>
+            </button></>)}
           </div>
         </div>
       </div>
     </form>
+    </>
   );
 };
 export default BuyMenu;

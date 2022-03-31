@@ -1,19 +1,29 @@
-import csv
-from typing import Optional
-from binance import exceptions
+from imp import reload
+import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI
+from src.routes.api import router as api_router
 
 from fastapi import FastAPI
+from pydantic import BaseModel
+import jwt
+from pydantic import BaseModel
+from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 
-from pydantic import BaseModel
-
-from binance import *
-import requests
-
-client = Client("nxOzvBKAdAQKS0Lt2BP6595pddj7r3IfgchMm6o1iGy5AeI3xzlqU6Qp1IVjGM7c",
-                "x0zRncgRRJlTcS6Gi7Oh5CjCisuYQAHOr7xaxV2ZgoSCn0cwKb4pGeIWjr390kvp", testnet=True)
 app = FastAPI()
 
+SECERT_KEY = "be68f8c68cdc2926474a80c904db2044d9d32f415aa54d26174887f3379be826"
+ALGORITHM ="HS256"
+ACCESS_TOKEN_EXPIRES_MINUTES = 800
+
+test_user = {
+   "username": "kieranmalloy123@gmail.com",
+    "password": "123",
+    "apikey" : "",
+    "secretkey" : "",
+
+}
 
 origins = [
     "http://localhost.tiangolo.com",
@@ -32,80 +42,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(api_router)
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+class LoginItem(BaseModel):
+    username: str
+    password: str
 
+    @app.get("/")
+    def read_root():
+     return {"Hello": "World"}
 
-@app.get("/coins/{coin_id}")
-def get_pricing_history(coin_id: str):
-    #data = client.get_historical_klines(coin_id, Client.KLINE_INTERVAL_1DAY, "1 Jan, 2022")
-    #return data
-    datafile = open('prices.csv', 'r')
-    datareader = list(csv.reader(datafile, delimiter=','))
-    data = []
-    for row in reversed(datareader):
-        data.append(row)
-
-    return data
+@app.post("/login")
+async def user_login(loginitem:LoginItem):
 
 
-@app.get("/account/")
-def get_account_info():
-    return client.get_account()
+    data = jsonable_encoder(loginitem)
+
+    if data['username']== test_user['username'] and data['password']== test_user['password']:
+
+        encoded_jwt = jwt.encode(data, SECERT_KEY, algorithm=ALGORITHM)
+        return {"token": encoded_jwt}
+
+    else:
+        return {"message":"login failed"}
+
+if __name__ == '__main__':
+    uvicorn.run("main:app", host='127.0.0.1', port=8005, log_level="info", reload=True)
+    print("running")
 
 
-@app.get("account/trades")
-def get_trades(coin_name: str,):
-    trades = client.get_my_trades(symbol=coin_name + 'USDT')
-    return trades
-
-
-@app.get("/account/orders")
-def get_orders(coin_name: str, limit: int):
-    orders = client.get_all_orders(symbol=coin_name + 'USDT', limit=limit)
-    return orders
-
-
-@app.get("/buy")
-def buy_crypto(coin_name: str, quantity: float, price: float):
-    try:
-        order = client.order_limit_buy(
-            symbol=coin_name + "USDT",
-            quantity=quantity,
-            price=price)
-    except exceptions.BinanceAPIException as e:
-        return e.message
-    return order
-
-@app.get("/sell")
-def buy_crypto(coin_name: str, quantity: float, price: float):
-    try:
-        order = client.order_limit_sell(
-            symbol=coin_name + "USDT",
-            quantity=quantity,
-            price=price)
-    except exceptions.BinanceAPIException as e:
-        return e.message
-    return order
-
-# Maybe dont need this anymore
-@app.get("/market/sparklines")
-def get_sparklines():
-    sparklines = requests.get(
-        "https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=true")
-    return sparklines.json()["market_data"]["sparkline_7d"]["price"]
-
-
-@app.get("/withdraw")
-def sell_crypto(coin_name: str, quantity: int, address: str):
-    try:
-        order = client.withdraw(
-            coin=coin_name,
-            address=address,
-            amount=quantity,
-            name='Withdraw')
-    except exceptions.BinanceAPIException as e:
-        return e.message
-    return order

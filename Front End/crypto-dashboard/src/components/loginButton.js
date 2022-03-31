@@ -1,6 +1,17 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { fetchToken as isAuth } from "../Auth";
 
-const LoginButton = () => {
-  return <button className="login-btn">Log In</button>;
+const LoginButton = (props) => {
+  const navigate = useNavigate();
+  return(
+    <button
+      class="w-full py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-400 transition duration-300"
+      onClick={() => navigate("/login")}
+    >
+      Log in
+    </button>
+  )
 };
+
 export default LoginButton;

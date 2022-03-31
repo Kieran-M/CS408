@@ -1,0 +1,7 @@
+version: "3.8"
+services: 
+  front-end:
+    build: "Front\ End/crypto-dashboard/."
+    ports:
+      - "3000:3000"
+    

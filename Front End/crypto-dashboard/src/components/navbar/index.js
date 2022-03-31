@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Transition } from "@headlessui/react";
+/* import { fetchToken as Auth } from "../../Auth"; */
+import Spinner from "../../components/Spinner";
+import AuthenticationButton from "../../components/authenticationButton";
+import LoginButton from "../../components/loginButton";
+import LogoutButton from "../../components/logoutButton";
+import { useIsAuthenticated } from "react-auth-kit";
 
-const Navbar = () => {
+const Navbar2 = (props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [Auth, setAuth] = useState(false);
+  const isAuthenticated = useIsAuthenticated();
   return (
     <div>
       <nav className="bg-gray-800">
-        <div className="max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="max-w-full px-4 sm:px-6 lg:px-8">
           <div className="flex items-center flex-start h-24">
             <div className="flex items-center">
               <div className="flex-shrink-0">
@@ -22,32 +29,74 @@ const Navbar = () => {
                   />
                 </NavLink>
               </div>
-              <div className="hidden md:block">
-                <div className="ml-10 flex items-baseline space-x-4">
+              <div className="hidden md:flex">
+                <div className="ml-10 flex items-baseline space-x-10">
                   <NavLink
-                    exact to="/"
-                    className={({ isActive }) => (isActive ? 'text-blue-400 px-3 py-2 rounded-md text-xl font-medium' : 'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-xl font-medium')}
-                    //className=" hover:bg-gray-700 text-white px-3 py-2 rounded-md text-sm font-medium"
+                    exact
+                    to="/"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "text-blue-400 px-3 py-2 rounded-md text-xl font-medium"
+                        : "text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-xl font-medium"
+                    }
                   >
                     Market
                   </NavLink>
-
                   <NavLink
                     to="/portfolio"
-                    className={({ isActive }) => (isActive ? 'text-blue-400 px-3 py-2 rounded-md text-xl font-medium' : 'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-xl font-medium')}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "text-blue-400 px-3 py-2 rounded-md text-xl font-medium"
+                        : "text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-xl font-medium"
+                    }
                   >
                     Portfolio
                   </NavLink>
-
-                  <NavLink
-                    to="/bots"
-                    className={({ isActive }) => (isActive ? 'text-blue-400 px-3 py-2 rounded-md text-xl font-medium' : 'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-xl font-medium')}
-                  >
-                    Bots
-                  </NavLink>
-                </div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  </div>
+                  <div className="mr-auto">
+                  <AuthenticationButton/>
+                  {/* (isAuthenticated ? (<LogoutButton/>): (<LoginButton/>)); */}
+                  </div>
               </div>
             </div>
+            <div class="md:flex auto items-baseline space-x-6"></div>
             <div className="-mr-2 flex md:hidden">
               <button
                 onClick={() => setIsOpen(!isOpen)}
@@ -127,4 +176,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Navbar2;

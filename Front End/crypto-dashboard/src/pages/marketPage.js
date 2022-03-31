@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import axios from "axios";
 
-import Navbar from "../components/navbar";
+import Navbar from "../components/navbar/navbar";
 import Table from "../components/table/Table";
 
 import { Sparklines, SparklinesLine } from "react-sparklines";
@@ -21,15 +21,15 @@ const Market = () => {
   const getCoins = async () => {
     axios
       .get(
-        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true"
+        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=gecko_desc&per_page=100&page=1&sparkline=true"
       )
       .then((res) => {
         setCoins(res.data);
-        console.log(res.data);
       })
       .catch((error) => console.log(error));
   };
 
+  //This useEffect is called every 10 seconds to refresh coin data. By changing the interval time this can be decreased to update data faster.
   useEffect(() => {
     getCoins();
 
@@ -102,7 +102,6 @@ const Market = () => {
         Cell: (tableProps) => (
           <Sparklines
             data={tableProps.row.original.x_days}
-            preserveAspectRatio={true}
           >
             <SparklinesLine
               color={
@@ -122,21 +121,21 @@ const Market = () => {
 
   const data = React.useMemo(() =>
     coin.map((coin) => {
-      return {
-        key: coin.id,
-        image: coin.image,
-        name: coin.name,
-        symbol: coin.symbol.toUpperCase(),
-        current_price: "$" + coin.current_price.toLocaleString(),
-        market_cap: "$" + coin.market_cap.toLocaleString(),
-        price_change_percentage_24h:
-          coin.price_change_percentage_24h.toLocaleString(),
-        total_volume: "$" + coin.total_volume.toLocaleString(),
-        x_days: coin.sparkline_in_7d.price,
-      };
+        return {
+          key: coin.id,
+          image: coin.image,
+          name: coin.name,
+          symbol: coin.symbol.toUpperCase(),
+          current_price: "$" + coin.current_price.toString(),
+          market_cap: "$" + coin.market_cap.toLocaleString(),
+          price_change_percentage_24h:
+            coin.price_change_percentage_24h.toLocaleString(),
+          total_volume: "$" + coin.total_volume.toLocaleString(),
+          x_days: coin.sparkline_in_7d.price,
+        };
     })
-  );
-
+  ); 
+  
   return (
     <>
       <Navbar toggle={toggle} />
