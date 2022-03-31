@@ -13,11 +13,7 @@ from typing import Optional
 import csv
 from datetime import datetime
 from binance.client import Client
-import pybacktest
 
-from backtesting import Backtest, Strategy
-from backtesting.lib import crossover
-from backtesting.test import SMA, GOOG
 client = Client()
 # APIRouter creates path operations for user module
 router = APIRouter(
@@ -36,8 +32,7 @@ def get_pricing_history(coin_id: str):
     update_pricing(coin_id)
 
     # data_frame = pd.read_csv(file, names=["Date", "open", "high", "low", "close"], nrows= xdays + 1)
-    df = pd.read_csv(file, names=["unix", "open", "high",
-                     "low", "close", "volume", "close_time", "quote_av", "trades", "tb_base", "tb_quote_av", "ignore"], index_col=False, skiprows=[0])
+    df = pd.read_csv(file, names=["unix", "open", "high","low", "close", "volume", "close_time", "quote_av", "trades", "tb_base", "tb_quote_av", "ignore"], index_col=False, skiprows=[0])
     # df.set_index("unix", inplace=True)
     new_df = df[["unix", "open", "high", "low", "close", "trades"]]
     data_list = []

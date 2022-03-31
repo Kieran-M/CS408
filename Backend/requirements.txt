@@ -54,7 +54,6 @@ pip-chill
 pip-upgrader
 plotly-express
 ply
-pycurl
 pydocstyle
 pyls-black
 pyodbc
@@ -84,7 +83,6 @@ tensorflow
 typed-ast
 unicodecsv
 uvicorn
-uvloop
 watchgod
 xlrd
 xlsxwriter
