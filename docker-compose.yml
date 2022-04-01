@@ -3,7 +3,7 @@ services:
   back-end: 
     build: "Backend/."
     ports:
-      - "8000:8000"
+      - "8000:80"
   front-end:
     build: "Front\ End/crypto-dashboard/."
     ports:
