@@ -20,17 +20,26 @@ const Portfolio = () => {
   });
 
   const [isOpen, setIsOpen] = useState(false);
+  //Page loading state
   const [isLoading, setLoading] = useState(true);
+  //Portfolio and trade data
   const [data, setData] = useState();
+  //Portofolio assets
   const [balances, setBalances] = useState([]);
+  //Historical order data for user
   const [orders, setOrders] = useState([]);
+
   const toggle = () => {
     setIsOpen(!isOpen);
   };
 
+  //Portfolio total value
   let total = 0.0;
+  //Coin with highest 24hr % increase 
   let highestValue = ["", 0.0];
+  //Coin with lowest 24hr % increase
   let lowestValue = ["", 0.0];
+  //Coin with highest 24hr $ increase
   let highestGainer = ["", 0.0];
   const navigate = useNavigate();
 
@@ -60,7 +69,6 @@ const Portfolio = () => {
   };
 
   const mapBalance = (balance) => {
-    console.log(balance[0].asset);
     binance.prevDay(balance[0].asset + "USDT", (error, prevDay, symbol) => {
       lowestValue = [
         prevDay.symbol.substring(0, prevDay.symbol.length - 4),
@@ -88,23 +96,18 @@ const Portfolio = () => {
           total += coinCost;
 
           setPortfolioValue(total);
-          console.log(parseFloat(total));
           if (
             parseFloat(prevDay.priceChangePercent) > parseFloat(highestValue[1])
           ) {
-            console.log("HighestVAlue");
             highestValue = [
               prevDay.symbol.substring(0, prevDay.symbol.length - 4),
               parseFloat(prevDay.priceChangePercent),
             ];
             setHighestCoin(highestValue);
           }
-          console.log("loewst Value is : " + parseFloat(lowestValue[1]));
-          console.log("price Value is : " + parseFloat(prevDay.priceChange));
           if (
             parseFloat(prevDay.priceChangePercent) < parseFloat(lowestValue[1])
           ) {
-            console.log("Lowest Value");
             lowestValue = [
               prevDay.symbol.substring(0, prevDay.symbol.length - 4),
               parseFloat(prevDay.priceChangePercent),
@@ -112,7 +115,6 @@ const Portfolio = () => {
             setWorstCoin(lowestValue);
           }
           if (parseFloat(prevDay.priceChange) > parseFloat(lowestValue[1])) {
-            console.log("Highest Gainer");
             highestGainer = [
               prevDay.symbol.substring(0, prevDay.symbol.length - 4),
               parseFloat(prevDay.priceChange),
@@ -124,6 +126,7 @@ const Portfolio = () => {
     });
     return;
   };
+
   //UseEffect to get balance and order data
   useEffect(() => {
     getAssets();
@@ -131,7 +134,6 @@ const Portfolio = () => {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       setBalances(data.account.balances);
       setOrders(data.orders);
       mapBalance(data.account.balances);
@@ -160,7 +162,7 @@ const Portfolio = () => {
   }
 
   //Trading table section
-
+  //Setting table columns
   const columns = [
     {
       Header: "Order ID",
@@ -219,10 +221,6 @@ const Portfolio = () => {
     },
   ];
 
-  const pieData = balances.map((balance) => {
-    return { name: balance.asset, y: parseFloat(balance.free) };
-  });
-
   const ordersData = orders.map((order) => ({
     orderid: order.orderId,
     symbol: order.symbol.substring(0, order.symbol.length - 4), //Dont want USDT so table can easily link to coin page
@@ -235,6 +233,11 @@ const Portfolio = () => {
     type: order.side,
     time: new Date(order.time).toLocaleString(),
   }));
+
+  //Mapping piechart data into highcharts format
+  const pieData = balances.map((balance) => {
+    return { name: balance.asset, y: parseFloat(balance.free) };
+  });
 
   //Configure pie chart options
   const options = {
@@ -278,20 +281,16 @@ const Portfolio = () => {
               </div>
               <div class="w-full overflow-hidden xl:w-1/2 py-20">
                 <h2 className="text-xl font-semibold py-2">
-                  {/* PORTFOLIO VALUE: ${portfolioValue.toLocaleString()} */}
-                  PORTFOLIO VALUE: $952,323.474
+                  PORTFOLIO VALUE: ${portfolioValue.toLocaleString()}
                 </h2>
                 <h2 className="text-xl font-semibold py-2">
-                  {/* BEST COIN: {highestCoin[0]} {highestCoin[1]}% */}
-                  BEST COIN: BNB 0.322%
+                  BEST COIN: {highestCoin[0]} {highestCoin[1]}%
                 </h2>
                 <h2 className="text-xl font-semibold py-2">
-                  {/* WORST COIN: {worstCoin[0]} {worstCoin[1]}% */}
-                  WORST COIN: TRX -1.155%
+                  WORST COIN: {worstCoin[0]} {worstCoin[1]}%
                 </h2>
                 <h2 className="text-xl font-semibold py-2 mb-10">
-                  {/* HIGHEST GAINER: {bestGainer[0]} ${bestGainer[1]} */}
-                  HIGHEST GAINER: TRX $-0.00081
+                  HIGHEST GAINER: {bestGainer[0]} ${bestGainer[1]}
                 </h2>
               </div>
             </div>

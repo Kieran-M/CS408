@@ -1,11 +1,10 @@
-version: "3.8"
 services: 
   back-end: 
-    build: "Backend/."
+    image: "kieran3410/crypto-dashboard:back-end"
     ports:
       - "8000:80"
   front-end:
-    build: "Front\ End/crypto-dashboard/."
+    image: "kieran3410/crypto-dashboard:front-end"
     ports:
       - "3000:3000"
     depends_on:

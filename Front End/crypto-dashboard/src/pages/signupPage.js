@@ -62,7 +62,7 @@ const SignupPage = () => {
                     token: response.data.decoded, //Auth token
                     tokenType: "Bearer", // Token type set as Bearer
                     authState: response.data.access_token.replace(/['"]+/g, ''), // Dummy auth user state
-                    expiresIn: 120,
+                    expiresIn: 30,
                   })){
                     navigate("/");
                   }

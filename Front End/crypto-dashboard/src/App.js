@@ -10,7 +10,6 @@ import Bots from "./pages/botsPage";
 import Coin from "./pages/coinPage";
 import Login from "./pages/loginPage";
 import Signup from "./pages/signupPage";
-import { RequireToken } from "./Auth";
 import { createBrowserHistory } from "history";
 import { AuthProvider, RequireAuth } from "react-auth-kit";
 

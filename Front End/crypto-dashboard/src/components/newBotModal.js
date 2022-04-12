@@ -1,10 +1,7 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { ExclamationIcon } from "@heroicons/react/outline";
-import Dropdown from "@material-tailwind/react/Dropdown";
-import DropdownItem from "@material-tailwind/react/DropdownItem";
-import DropdownLink from "@material-tailwind/react/DropdownLink";
 import { FormControl, InputLabel, Select, MenuItem, OutlinedInput, InputAdornment  } from "@material-ui/core";
+
 const NewBotModal = (props) => {
   const cancelButtonRef = useRef(null);
   const [amount,setAmount] = useState(0.0);
@@ -36,10 +33,6 @@ const NewBotModal = (props) => {
           >
             <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
           </Transition.Child>
-          {/* This element is to trick the browser into centering the modal contents. */}
-          {/* <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
-            &#8203;
-          </span> */}
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"

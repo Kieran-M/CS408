@@ -6,7 +6,6 @@ const CoinHeader = (props) => {
   const [data, setData] = useState({lastPrice: 0, highPrice: 0, lowPrice: 0, priceChangePercent: 0});
   const getCoinData = () => {
     binance.prevDay(props.coinname + "USDT", (error, prevDay, symbol) => {
-      console.log(prevDay);
       setData(prevDay);
     });
   };

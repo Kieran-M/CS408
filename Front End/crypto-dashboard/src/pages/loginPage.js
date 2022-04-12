@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Navbar from "../components/navbar/navbar";
-import { useIsAuthenticated, useSignIn } from "react-auth-kit";
+import { useSignIn } from "react-auth-kit";
 import { useNavigate, Link } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import qs from "qs";
 
-const LoginPage = (props) => {
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const isAuthenticated = useIsAuthenticated();
   const signIn = useSignIn();
   const navigate = useNavigate();
 
@@ -18,6 +17,7 @@ const LoginPage = (props) => {
     username: email,
     password: password,
   });
+
   var config = {
     method: "post",
     url: "http://127.0.0.1:8000/authenticate/token",
@@ -26,29 +26,21 @@ const LoginPage = (props) => {
     },
     data: data,
   };
+
   function login(e) {
     e.preventDefault();
     axios(config)
       .then(function (response) {
         const decoded = jwt_decode(response.data.access_token);
-        console.log(response);
         if (response.data.access_token) {
           if (
             signIn({
               token: response.data.decoded, //Auth token
               tokenType: "Bearer", // Token type set as Bearer
-              authState: response.data.access_token.replace(/['"]+/g, ""), // Dummy auth user state
+              authState: response.data.access_token.replace(/['"]+/g, ""),
               expiresIn: 30,
             })
           ) {
-            //alert("Successful login");
-            //signIn({token: response.data.token});
-            /* localStorage.setItem("_auth", true);
-              console.info(decoded);
-              setToken(decoded);
-              localStorage.setItem("apikey", decoded.sub.apikey);
-              localStorage.setItem("secret", decoded.sub.secretkey);
-              console.log(localStorage.getItem("secret")); */
             navigate(-1);
           }
         }

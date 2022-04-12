@@ -7,27 +7,3 @@
   *{
   font-family: "Sora", sans-serif;
   }
-  /**
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-
-
-.login-btn {
-  border-radius: 1rem;
-  background: #014aac;
-  padding: 1rem 1rem;
-  color: #fff;
-  outline: none;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  text-decoration: none;
-}
-
-.login-btn:hover {
-  transition: all 0.2s ease-in-out;
-  background: #447cc4;
-  color: #010606;
-}
-*/

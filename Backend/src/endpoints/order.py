@@ -39,12 +39,6 @@ async def get_account(token=Depends(JWTBearer())):
     return info
 
 
-@router.get("/account/trades", dependencies=[Depends(JWTBearer())])
-def get_trades(coin_name: str,):
-    trades = client.get_my_trades(symbol=coin_name + 'USDT')
-    return trades
-
-
 @router.get("/account/orders", dependencies=[Depends(JWTBearer())])
 async def get_orders(token=Depends(JWTBearer())):
     orders = []

@@ -16,6 +16,7 @@ const Market = () => {
     setIsOpen(!isOpen);
   };
 
+  //State containing coin list
   const [coin, setCoins] = useState([]);
 
   const getCoins = async () => {
@@ -40,6 +41,7 @@ const Market = () => {
     return () => clearInterval(interval);
   }, []);
 
+  //Column list for coin table that is passed to table component
   const columns = React.useMemo(
     () => [
       {
@@ -119,6 +121,7 @@ const Market = () => {
     []
   );
 
+  //Mapping coin data into a format useable by the table component
   const data = React.useMemo(() =>
     coin.map((coin) => {
         return {

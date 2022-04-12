@@ -19,7 +19,6 @@ const OrderBook = (props) => {
     };
     ws.onmessage = (event) => {
       const response = JSON.parse(event.data);
-      console.log(response);
       setOrders(response);
     };
     ws.onclose = () => {

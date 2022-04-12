@@ -23,7 +23,7 @@ import Heikinashi from "highcharts/modules/heikinashi.js";
 import HollowCandlestick from "highcharts/modules/hollowcandlestick.js";
 import AO from "highcharts/indicators/ao.js";
 import MFI from "highcharts/indicators/mfi.js";
-import HC_exporting from 'highcharts/modules/exporting'
+import HC_exporting from "highcharts/modules/exporting";
 
 import CoinHeader from "../components/coinHeader";
 
@@ -37,36 +37,25 @@ Heikinashi(Highcharts);
 HollowCandlestick(Highcharts);
 AO(Highcharts);
 MFI(Highcharts);
-HC_exporting(Highcharts)
+HC_exporting(Highcharts);
 
 //Show reset zoom button on X axis zoom
 Highcharts.removeEvent(Highcharts.Chart, "beforeShowResetZoom");
 
 const Coin = () => {
-  const Binance = require("node-binance-api");
-  const binance = new Binance().options({
-    //nxOzvBKAdAQKS0Lt2BP6595pddj7r3IfgchMm6o1iGy5AeI3xzlqU6Qp1IVjGM7c
-    //x0zRncgRRJlTcS6Gi7Oh5CjCisuYQAHOr7xaxV2ZgoSCn0cwKb4pGeIWjr390kvp
-    /* APIKEY: localStorage.getItem("apikey"),
-    APISECRET: localStorage.getItem("secret"), */
-    APIKEY: "nxOzvBKAdAQKS0Lt2BP6595pddj7r3IfgchMm6o1iGy5AeI3xzlqU6Qp1IVjGM7c",
-    APISECRET:
-      "x0zRncgRRJlTcS6Gi7Oh5CjCisuYQAHOr7xaxV2ZgoSCn0cwKb4pGeIWjr390kvp",
-    //test:true,
-    useServerTime: true,
-    verbose: true,
-    urls: {
-      base: "https://testnet.binance.vision/api/",
-    },
-  });
-  let chart;
   const { coinname } = useParams();
   const [isOpen, setIsOpen] = useState(false);
+  //Page loading state
   const [isLoading, setLoading] = useState(true);
+  //Historical pricing data
   const [data, setData] = useState(null);
+  //Trading volume data
   const [volume, setVolume] = useState(null);
+  //Prediction data
   const [predict, setPredict] = useState(null);
+  //User order parameters
   const [order, setOrder] = useState({ amount: 0, price: 0 });
+  //Chart options for highcharts
   const [chartOptions, setChartOptions] = useState({
     tooltip: {
       split: true,
@@ -108,17 +97,6 @@ const Coin = () => {
       text: coinname,
     },
     chart: {
-      events: {
-        addSeries(e) {
-          var series = chart.chartRef.current.chart.series.map((s) => s.options);
-          if (series.findIndex((s) => s.id == e.options.id)) {
-            series = series.slice(0, series.length - 1);
-            series.push(e.options);
-            chart.onAddIndicator(series);
-            return false; //having issues with return false sometimes, touchend error fires. If dont return false there are temporary duplicate indicators
-          }
-        },
-      },
       height: 600,
       style: {
         cursor: "crosshair",
@@ -172,40 +150,13 @@ const Coin = () => {
       ],
     },
   });
+
   const toggle = () => {
     setIsOpen(!isOpen);
   };
 
+  //This useEffect will retrieve the pricing data for the selected coin
   useEffect(() => {
-    //minQty = minimum order quantity
-    //minNotional = minimum order value (price * quantity)
-    binance.exchangeInfo(function (error, data) {
-      let minimums = {};
-      for (let obj of data.symbols) {
-        let filters = { status: obj.status };
-        for (let filter of obj.filters) {
-          if (filter.filterType == "MIN_NOTIONAL") {
-            filters.minNotional = filter.minNotional;
-          } else if (filter.filterType == "PRICE_FILTER") {
-            filters.minPrice = filter.minPrice;
-            filters.maxPrice = filter.maxPrice;
-            filters.tickSize = filter.tickSize;
-          } else if (filter.filterType == "LOT_SIZE") {
-            filters.stepSize = filter.stepSize;
-            filters.minQty = filter.minQty;
-            filters.maxQty = filter.maxQty;
-          }
-        }
-        //filters.baseAssetPrecision = obj.baseAssetPrecision;
-        //filters.quoteAssetPrecision = obj.quoteAssetPrecision;
-        filters.orderTypes = obj.orderTypes;
-        filters.icebergAllowed = obj.icebergAllowed;
-        minimums[obj.symbol] = filters;
-      }
-      console.log(minimums);
-      global.filters = minimums;
-      //fs.writeFile("minimums.json", JSON.stringify(minimums, null, 4), function(err){});
-    });
     axios
       .get("http://127.0.0.1:8000/coins/get/" + coinname.toUpperCase())
       .then((res) => {
@@ -223,6 +174,7 @@ const Coin = () => {
         });
         setVolume(volume);
         setData(candlestickData);
+        //Update chart series with the new data
         setChartOptions({
           yAxis: [
             {
@@ -284,6 +236,7 @@ const Coin = () => {
     );
   }
 
+  //Update chart series with predict data
   const updateSeries = (predictionData) => {
     setChartOptions({
       ...chartOptions,
@@ -311,6 +264,7 @@ const Coin = () => {
     });
   };
 
+  //Retrieves prediction data from backend API
   function getPredictions() {
     axios
       .get("http://127.0.0.1:8000/coins/predict/" + coinname)
@@ -326,6 +280,7 @@ const Coin = () => {
       .catch((error) => console.log(error));
   }
 
+  //Submits a buy or sell order to backend API
   function orderHandler(type) {
     let orderurl =
       "http://127.0.0.1:8000/orders/" +
@@ -347,50 +302,22 @@ const Coin = () => {
     };
     axios(orderConfig)
       .then(function (response) {
-        let res = response.data
-        console.log(res)
-        alert(res.side.toLowerCase() + " order placed for " + res.origQty.toString() + " " + res.symbol + " at $" + res.price.toString());
+        let res = response.data;
+        console.log(res);
+        alert(
+          res.side.toLowerCase() +
+            " order placed for " +
+            res.origQty.toString() +
+            " " +
+            res.symbol +
+            " at $" +
+            res.price.toString()
+        );
       })
       .catch(function (error) {
         console.log(error);
       });
-
-    /* console.log(coinname + "USDT");
-    if (type.toLowerCase() == "buy") {
-      binance.buy(
-        coinname + "USDT",
-        order.amount,
-        order.price,
-        { type: "LIMIT" },
-        (error, response) => {
-          if (error) {
-            console.log(error);
-            alert(error);
-          }
-          console.info("Limit Buy response", response);
-          console.info("order id: " + response.orderId);
-        }
-      );
-    } else {
-      binance.sell(
-        coinname + "USDT",
-        order.amount,
-        order.price,
-        { type: "LIMIT" },
-        (error, response) => {
-          if (error) {
-            console.log(error);
-            alert(error);
-          }
-          console.info("Limit Buy response", response);
-          console.info("order id: " + response.orderId);
-        }
-      );
-    } */
   }
-  const onAddIndicator = (series) => {
-    setChartOptions(...chartOptions,{series: series});
- }
 
   return (
     <>
@@ -415,7 +342,6 @@ const Coin = () => {
               constructorType={"stockChart"}
               containerProps={{ style: { height: "80vh" } }}
               options={chartOptions}
-              onAddIndicator={onAddIndicator}
             />
           </div>
           <div class="w-full overflow-hidden xl:w-1/5"></div>

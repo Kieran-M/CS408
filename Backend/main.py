@@ -1,4 +1,4 @@
-from imp import reload
+from importlib import reload
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
@@ -15,15 +15,7 @@ app = FastAPI()
 
 SECERT_KEY = "be68f8c68cdc2926474a80c904db2044d9d32f415aa54d26174887f3379be826"
 ALGORITHM ="HS256"
-ACCESS_TOKEN_EXPIRES_MINUTES = 800
-
-test_user = {
-   "username": "kieranmalloy123@gmail.com",
-    "password": "123",
-    "apikey" : "",
-    "secretkey" : "",
-
-}
+ACCESS_TOKEN_EXPIRES_MINUTES = 30
 
 origins = [
     "http://localhost.tiangolo.com",
@@ -50,21 +42,7 @@ class LoginItem(BaseModel):
 
     @app.get("/")
     def read_root():
-     return {"Hello": "World"}
-
-@app.post("/login")
-async def user_login(loginitem:LoginItem):
-
-
-    data = jsonable_encoder(loginitem)
-
-    if data['username']== test_user['username'] and data['password']== test_user['password']:
-
-        encoded_jwt = jwt.encode(data, SECERT_KEY, algorithm=ALGORITHM)
-        return {"token": encoded_jwt}
-
-    else:
-        return {"message":"login failed"}
+     return {"Hello World"}
 
 if __name__ == '__main__':
     uvicorn.run("main:app", host='127.0.0.1', port=8005, log_level="info", reload=True)

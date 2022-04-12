@@ -6,7 +6,7 @@ const LoginButton = (props) => {
   const navigate = useNavigate();
   return(
     <button
-      class="w-full py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-400 transition duration-300"
+      className="w-full py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-400 transition duration-300"
       onClick={() => navigate("/login")}
     >
       Log in

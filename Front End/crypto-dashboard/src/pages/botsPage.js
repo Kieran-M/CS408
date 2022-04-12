@@ -4,10 +4,13 @@ import BotMenu from "../components/botMenu";
 import DeleteModal from "../components/modal";
 import NewBotModal from "../components/newBotModal";
 
+//This component renders the bot page which will allow users to create and manage trading bots
 const Bots = () => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isNewBotModalOpen, setNewBotModalOpen] = useState(false);
 
+  //State containing list of running bots
+  //This is filled with test bots for demonstration purposes
   const [botList, setBotList] = useState([
     {
       id: 1,
@@ -27,7 +30,7 @@ const Bots = () => {
     },
   ]);
 
-  //This will contain the ID of the bot to be deleted
+  //This  will contain the ID of the bot to be deleted
   const [toDelete, setToDelete] = useState(null);
 
   const removeBot = () => {
@@ -39,7 +42,7 @@ const Bots = () => {
     setBotList(filtered);
   };
 
-  const addBot = (coin,amount) => {
+  const addBot = (coin, amount) => {
     let lastId = 0;
     if (botList.length > 0) {
       lastId = botList[botList.length - 1].id;
@@ -88,10 +91,10 @@ const Bots = () => {
             </div>
           </div>
           <NewBotModal
-                open={isNewBotModalOpen}
-                setOpen={setNewBotModalOpen}
-                addBot={addBot}
-              ></NewBotModal>
+            open={isNewBotModalOpen}
+            setOpen={setNewBotModalOpen}
+            addBot={addBot}
+          ></NewBotModal>
         </>
       ) : (
         <div className="min-h-screen bg-gray-100 text-gray-1000">
